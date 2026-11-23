@@ -1,0 +1,10 @@
+<?php
+require_once "../config/koneksi.php";
+$error="";
+if($_SERVER['REQUEST_METHOD']==='POST'){
+ $nama=trim($_POST['nama_produk']??''); $kategori=trim($_POST['kategori']??'');
+ $harga=(float)($_POST['harga']??0); $stok=(int)($_POST['stok']??0);
+ if($nama===''||$harga<=0||$stok<0){$error="Nama produk, harga di atas 0, dan stok yang valid wajib diisi.";}
+ else{$s=$pdo->prepare("INSERT INTO produk(nama_produk,kategori,harga,stok) VALUES(?,?,?,?)");$s->execute([$nama,$kategori,$harga,$stok]);header("Location: index.php?sukses=1");exit;}
+}
+?><!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tambah Produk</title><link rel="stylesheet" href="../assets/css/style.css"></head><body><div class="app-shell"><aside class="sidebar"><a class="brand" href="../index.php"><span class="brand-icon">BR</span><span><b>Kasir Bu Rina</b><small>Warung & Toko</small></span></a><nav><a href="../index.php">▦ <span>Dashboard</span></a><a class="active" href="index.php">▣ <span>Data Produk</span></a><a href="../transaksi/index.php">＋ <span>Transaksi Kasir</span></a><a href="../riwayat/index.php">◷ <span>Riwayat Transaksi</span></a></nav></aside><main class="main"><header class="topbar"><div><p class="eyebrow">INVENTARIS TOKO</p><h1>Tambah Produk</h1></div><a class="btn btn-soft" href="index.php">← Kembali</a></header><section class="panel form-panel"><?php if($error): ?><div class="alert error"><?= htmlspecialchars($error) ?></div><?php endif; ?><form method="post"><label>Nama Produk<input name="nama_produk" required maxlength="120" placeholder="Contoh: Teh Botol"></label><label>Kategori<input name="kategori" maxlength="80" placeholder="Contoh: Minuman"></label><div class="form-grid"><label>Harga (Rp)<input type="number" name="harga" min="1" required placeholder="5000"></label><label>Stok<input type="number" name="stok" min="0" required value="0"></label></div><button class="btn btn-primary" type="submit">Simpan Produk</button></form></section></main></div></body></html>
