@@ -1,0 +1,7 @@
+<?php
+require __DIR__ . '/config/koneksi.php';
+$rows=$pdo->query("SELECT t.*, GROUP_CONCAT(CONCAT(d.nama_produk,' x',d.jumlah) SEPARATOR ', ') item FROM transaksi t LEFT JOIN detail_transaksi d ON d.transaksi_id=t.id GROUP BY t.id ORDER BY t.id DESC LIMIT 100")->fetchAll();
+?>
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Riwayat Kasir</title><link rel="stylesheet" href="style.css"></head><body>
+<header class="top"><div><span class="eyebrow">CATATAN PENJUALAN</span><h1>Riwayat Transaksi</h1><p>Menampilkan 100 transaksi terakhir.</p></div><nav><a href="index.php">Kasir</a><a href="produk.php">Produk</a><a class="active" href="riwayat.php">Riwayat</a></nav></header>
+<main class="wrap"><section class="panel"><div class="table-scroll"><table><thead><tr><th>Kode</th><th>Waktu</th><th>Item</th><th>Total</th><th>Kembalian</th><th>Struk</th></tr></thead><tbody><?php foreach($rows as $r): ?><tr><td><?= htmlspecialchars($r['kode_transaksi']) ?></td><td><?= htmlspecialchars($r['dibuat_pada']) ?></td><td><?= htmlspecialchars($r['item']??'-') ?></td><td>Rp <?= number_format($r['total'],0,',','.') ?></td><td>Rp <?= number_format($r['kembalian'],0,',','.') ?></td><td><a href="struk.php?id=<?= $r['id'] ?>">Lihat</a></td></tr><?php endforeach; ?></tbody></table></div><?php if(!$rows): ?><p>Belum ada transaksi.</p><?php endif; ?></section></main></body></html>
